@@ -75,17 +75,19 @@
                   }
                 }
               }
-            },
-            "400": {
-              "description": "Erro ao criar usuário",
-              "content": {
-                "application/json": {
-                  "schema": {
+            }
+          },
+          "400": {
+            "description": "Email já está sendo utilizado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
                     "type": "object",
                     "properties": {
                       "error": {
                         "type": "string",
-                        "example": "This email is already in use"
+                        "example": "User all ready exists."
                       }
                     }
                   }
