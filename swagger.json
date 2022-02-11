@@ -97,6 +97,96 @@
           }
         }
       }
+    },
+    "/users/{id}": {
+      "description": "Gerenciamento de usuários",
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Busca um usuário pelo ID",
+        "description": "Somente usuário **admin** pode acessar",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "$uuid",
+            "description": "ID do usuário",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operação realizada com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "example": "14d6d88a-bcef-4d0d-888d-2004fa292b84"
+                      },
+                      "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                      },
+                      "admin": {
+                        "type": "boolean",
+                        "example": true
+                      },
+                      "email": {
+                        "type": "string",
+                        "example": "jhondoe@email.com"
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2020-05-05T17:00:00.000Z"
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2020-05-05T17:00:00.000Z"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "admin",
+                      "email",
+                      "created_at",
+                      "updated_at"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário sem permissão ou Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string",
+                        "example": "You need to be an administrator to list all users."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   }
 }
