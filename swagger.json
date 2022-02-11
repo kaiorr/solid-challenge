@@ -7,29 +7,28 @@
   },
   "paths": {
     "/users": {
-      "description": "Gerenciamento de usuários",
       "post": {
         "tags": [
-          "users"
+          "Users"
         ],
         "summary": "Cria um novo usuário",
         "description": "Cria um novo usuário",
         "requestBody": {
-          "required": true,
-          "description": "Campos obrigatórios para criação de um usuário",
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
                   "name": {
-                    "type": "string",
-                    "example": "John Doe"
+                    "type": "string"
                   },
                   "email": {
-                    "type": "string",
-                    "example": "jhondoe@email.com"
+                    "type": "string"
                   }
+                },
+                "example": {
+                  "name": "Jhon Doe",
+                  "email": "jhondoe@email.com"
                 }
               }
             }
@@ -37,7 +36,70 @@
         },
         "responses": {
           "201": {
-            "description": "Operação realizada com sucesso",
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User email already in use.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Retorna todos usuários",
+        "description": "Retorna todos usuários somente **admin** pode acessar",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "user_id",
+            "description": "user id for identification",
+            "required": true,
+            "example": "ea057146-f68c-4124-b8b8-4279189acb81"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Ok",
             "content": {
               "application/json": {
                 "schema": {
@@ -46,30 +108,22 @@
                     "type": "object",
                     "properties": {
                       "id": {
-                        "type": "string",
-                        "example": "14d6d88a-bcef-4d0d-888d-2004fa292b84"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "John Doe"
-                      },
-                      "admin": {
-                        "type": "boolean",
-                        "example": false
-                      },
-                      "email": {
-                        "type": "string",
-                        "example": "jhondoe@email.com"
+                        "type": "string"
                       },
                       "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2020-05-05T17:00:00.000Z"
+                        "type": "string"
                       },
                       "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2020-05-05T17:00:00.000Z"
+                        "type": "string"
+                      },
+                      "admin": {
+                        "type": "boolean"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
                       }
                     }
                   }
@@ -78,17 +132,29 @@
             }
           },
           "400": {
-            "description": "Email já está sendo utilizado",
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "error": {
-                        "type": "string",
-                        "example": "User all ready exists."
-                      }
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
                     }
                   }
                 }
@@ -98,87 +164,145 @@
         }
       }
     },
-    "/users/{id}": {
-      "description": "Gerenciamento de usuários",
-      "get": {
+    "/users/{user_id}/admin": {
+      "patch": {
         "tags": [
-          "users"
+          "Users"
         ],
-        "summary": "Busca um usuário pelo ID",
-        "description": "Somente usuário **admin** pode acessar",
+        "summary": "Make user admin",
+        "description": "Update isAdmin to true",
         "parameters": [
           {
-            "name": "id",
-            "in": "$uuid",
-            "description": "ID do usuário",
+            "name": "user_id",
+            "in": "path",
+            "description": "user id",
             "required": true,
             "schema": {
               "type": "string"
-            }
+            },
+            "example": "ea057146-f68c-4124-b8b8-4279189acb81"
           }
         ],
         "responses": {
-          "200": {
-            "description": "Operação realizada com sucesso",
+          "201": {
+            "description": "Ok",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "example": "14d6d88a-bcef-4d0d-888d-2004fa292b84"
-                      },
-                      "name": {
-                        "type": "string",
-                        "example": "John Doe"
-                      },
-                      "admin": {
-                        "type": "boolean",
-                        "example": true
-                      },
-                      "email": {
-                        "type": "string",
-                        "example": "jhondoe@email.com"
-                      },
-                      "created_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2020-05-05T17:00:00.000Z"
-                      },
-                      "updated_at": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2020-05-05T17:00:00.000Z"
-                      }
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
                     },
-                    "required": [
-                      "id",
-                      "name",
-                      "admin",
-                      "email",
-                      "created_at",
-                      "updated_at"
-                    ]
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           },
           "404": {
-            "description": "Usuário sem permissão ou Usuário não encontrado",
+            "description": "User not found",
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "error": {
-                        "type": "string",
-                        "example": "You need to be an administrator to list all users."
-                      }
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user info",
+        "description": "Get user identified in parameter",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "user_id",
+            "description": "user id",
+            "required": true,
+            "example": "ea057146-f68c-4124-b8b8-4279189acb81"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "type": "boolean"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "User not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
                     }
                   }
                 }
